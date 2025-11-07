@@ -56,6 +56,7 @@ def solve_part_two(n_p):
             n_e = n_t - n_b
             print(w * n_e)
             break
+
         l += 1
 
 
