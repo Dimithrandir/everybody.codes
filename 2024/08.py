@@ -1,6 +1,27 @@
 from math import ceil, sqrt
 
 
+def get_thickness(n, n_p, n_a, p_3=False):
+    if n == 1:
+        return n
+    else:
+        return ((get_thickness(n - 1, n_p, n_a, p_3) * n_p) % n_a) + (n_a if p_3 else 0)
+
+
+def find_thickness_cycle(n_p, n_a, p_3=False):
+    t_i = []
+    s = 1 if p_3 else 0
+    i = 1
+    while True:
+        t_i.append(get_thickness(i, n_p, n_a, p_3))
+        m = len(t_i) // 2 + s
+        if t_i[s:m] and t_i[s:m] == t_i[m:]:
+            t_i = t_i[s:m]
+            break
+        i += 1
+    return t_i
+
+
 def solve_part_one(n_b):
 
     w = ceil(2 * sqrt(n_b) - 1)
@@ -11,27 +32,12 @@ def solve_part_one(n_b):
 
 def solve_part_two(n_p):
 
-    def get_thickness(n, n_p, n_a):
-        if n == 1:
-            return n
-        else:
-            return (get_thickness(n - 1, n_p, n_a) * n_p) % n_a
-
     # acolytes
     n_a = 1111
     # block supply
     n_b = 20240000
 
-    # find thickness cycle
-    i = 1
-    t_i = []
-    while True:
-        t_i.append(get_thickness(i, n_p, n_a))
-        m = len(t_i) // 2
-        if t_i[:m] == t_i[m:]:
-            t_i = t_i[:m]
-            break
-        i += 1
+    t_i = find_thickness_cycle(n_p, n_a)
 
     # layer
     l = 1
@@ -55,29 +61,12 @@ def solve_part_two(n_p):
 
 def solve_part_three(n_p):
 
-    def get_thickness(n, n_p, n_a):
-        if n == 1:
-            return n
-        else:
-            return ((get_thickness(n - 1, n_p, n_a) * n_p) % n_a) + n_a
-
     # acolytes
     n_a = 10
     # block supply
     n_b = 202400000
 
-    # find thickness cycle
-    i = 1
-    t_i = []
-    while True:
-        t_i.append(get_thickness(i, n_p, n_a))
-        m = len(t_i) // 2 + 1
-        if t_i[1:m] and t_i[1:m] == t_i[m:]:
-            t_i = t_i[1:m]
-            break
-        i += 1
-
-    print(t_i)
+    t_i = find_thickness_cycle(n_p, n_a, True)
 
     n_t = 1
     heights = [1]
